@@ -3,4 +3,4 @@ class Counter1(Counter):
         if value == 0:
             del self[key]
         else:
-            super()[key] = value
+            super().__setitem__(value, key)
