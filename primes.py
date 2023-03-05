@@ -18,13 +18,14 @@ primes = [i for i, x in enumerate(isPrime) if x]
 def factorize(n):
     i = 2
     ans = Counter()
-    for p in primes:
-        if p * p > n:
-            break
+    p = 2
+    while p * p <= n:
         while n % p == 0:
             n //= p
             ans[p] += 1
-    ans[n] += 1
+        p += 1
+    if n > 1:
+        ans[n] += 1
     return ans
 
   
