@@ -3,7 +3,7 @@ import collections
 class Array(collections.abc.Sequence):
     def __init__(self, arr, index_range=None):
         self.arr = arr
-        if not index_range:
+        if index_range is None:
             index_range = range(len(arr))
         self.range = index_range
     def __getitem__(self, key):
