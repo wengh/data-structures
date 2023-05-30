@@ -49,3 +49,13 @@ def node_discard(node, x):
     left, right = node_split(node, x)
     left, _ = node_split(left, x-1)
     return node_merge(left, right)
+
+def node_find(node, x):
+    if not node:
+        return None
+    elif x < node.x:
+        return node_find(node.lc, x)
+    elif node.x < x:
+        return node_find(node.rc, x)
+    else:
+        return node
