@@ -1,6 +1,5 @@
-#include <functional>
 #include <deque>
-#include <limits>
+#include <functional>
 
 template <typename T = int, typename Comp = std::less<T>>
 class MinMonotonicQueue {
