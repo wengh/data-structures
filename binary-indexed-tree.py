@@ -1,5 +1,5 @@
 # prefix max
-class BinaryIndexedTree:
+class MaxBIT:
     def __init__(self, n):
         self.n = n
         self.arr = [0] * (n+1)
@@ -22,16 +22,10 @@ class BinaryIndexedTree:
             i += i & -i
 
 # prefix sum
-class BinaryIndexedTree:
+class BIT:
     def __init__(self, n):
         self.n = n
         self.arr = [0] * (n + 1)
-    def populate(self, values):
-        assert(len(values) == self.n)
-        for i in range(1, self.n + 1):
-            self.arr[i] += values[i - 1]
-            if i + (i & -i) <= self.n:
-                self.arr[i + (i & -i)] += self.arr[i]
     def sum(self, i):
         ans = 0
         i += 1
@@ -39,10 +33,34 @@ class BinaryIndexedTree:
             ans += self.arr[i]
             i -= i & -i
         return ans
-    def range(self, left, right):
-        return self.sum(right) - self.sum(left - 1)
     def edit(self, i, x):
         i += 1
         while i <= self.n:
             self.arr[i] += x
             i += i & -i
+    def __iter__(self):
+        for i in range(self.n):
+            yield self.sum(i) - self.sum(i-1)
+    def __repr__(self):
+        return repr(list(self))
+
+class RangeBIT:
+    def __init__(self, n):
+        self.n = n
+        self.bit1 = BIT(n)
+        self.bit2 = BIT(n)
+    def edit(self, l, r, x):
+        self.bit1.edit(l, x)
+        self.bit1.edit(r+1, -x)
+        self.bit2.edit(l, x*(l-1))
+        self.bit2.edit(r+1, -x*r)
+    def sum(self, r):
+        return self.bit1.sum(r) * r - self.bit2.sum(r)
+    def range(self, l, r):
+        return self.sum(r) - self.sum(l-1)
+    def __iter__(self):
+        for i in range(self.n):
+            yield self.range(i, i)
+    def __repr__(self):
+        return repr(list(self))
+
