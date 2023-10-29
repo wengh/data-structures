@@ -41,6 +41,8 @@ class BIT:
     def __iter__(self):
         for i in range(self.n):
             yield self.sum(i) - self.sum(i-1)
+    def __repr__(self):
+        return repr(list(self))
 
 class RangeBIT:
     def __init__(self, n):
@@ -59,3 +61,6 @@ class RangeBIT:
     def __iter__(self):
         for i in range(self.n):
             yield self.range(i, i)
+    def __repr__(self):
+        return repr(list(self))
+
