@@ -40,13 +40,13 @@ class BIT:
             i += i & -i
     def __iter__(self):
         for i in range(self.n):
-            yield self.sum(i)
+            yield self.sum(i) - self.sum(i-1)
 
 class RangeBIT:
     def __init__(self, n):
         self.n = n
-        self.bit1 = BIT(n+1)
-        self.bit2 = BIT(n+1)
+        self.bit1 = BIT(n)
+        self.bit2 = BIT(n)
     def edit(self, l, r, x):
         self.bit1.edit(l, x)
         self.bit1.edit(r+1, -x)
@@ -58,4 +58,4 @@ class RangeBIT:
         return self.sum(r) - self.sum(l-1)
     def __iter__(self):
         for i in range(self.n):
-            yield self.sum(i)
+            yield self.range(i, i)
