@@ -8,7 +8,7 @@ using Num = long long;
 struct Line {
   Num m, b;
 
-  Num operator()(Num x) const { return m * x + b; }
+  template <typename T> auto operator()(T x) const { return m * x + b; }
 
   double intersect(const Line &other) const {
     return static_cast<double>(other.b - b) / (m - other.m);
