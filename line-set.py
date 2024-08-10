@@ -21,7 +21,7 @@ class LineSet:
     def __init__(self):
         self.lines = SortedList(key=lambda l: -l.m)
         self.xs = SortedList()
-    
+
     def __remove(self, i):
         del self.lines[i]
         if i < len(self.xs):
@@ -31,13 +31,16 @@ class LineSet:
         if 0 < i < len(self.lines):
             self.xs.add(self.lines[i].intersect(self.lines[i - 1]))
     
+    def __len__(self):
+        return len(self.lines)
+
     def __call__(self, x):
         '''
         Get the minimum y value at x among all lines.
         '''
         i = self.xs.bisect_left(x)
         return self.lines[i](x)
-    
+
     def add(self, line: Line):
         i = self.lines.bisect_left(line)
 
@@ -64,7 +67,7 @@ class LineSet:
                 self.__remove(i)
             else:
                 break
-        
+
         while i - 2 >= 0:
             l1 = self.lines[i - 1]
             l2 = self.lines[i - 2]
@@ -74,16 +77,16 @@ class LineSet:
                 i -= 1
             else:
                 break
-        
+
         if 0 < i <= len(self.xs):
             del self.xs[i-1]
         if 0 < i:
             self.xs.add(line.intersect(self.lines[i - 1]))
         if i < len(self.lines):
             self.xs.add(line.intersect(self.lines[i]))
-        
+
         self.lines.add(line)
-    
+
     def validate(self):
         '''
         Check that invariants hold.
