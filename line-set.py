@@ -1,8 +1,11 @@
 from sortedcontainers import SortedList
 from dataclasses import dataclass
 from fractions import Fraction
+from bisect import bisect_left
+
 
 Num = int
+
 
 @dataclass(frozen=True, order=True, slots=True)
 class Line:
@@ -16,6 +19,7 @@ class Line:
         if self.m == other.m:
             return None
         return Fraction((other.b - self.b), (self.m - other.m))
+
 
 class LineSet:
     def __init__(self):
@@ -99,3 +103,51 @@ class LineSet:
             x = l1.intersect(l2)
             expect.append(x)
         assert self.xs == expect, f'\n{list(self.xs)}\nexpect:\n{expect}'
+
+
+class MonotonicLineSet:
+    '''
+    A line set that requires the lines to be added in decreasing order of slope.
+    '''
+
+    def __init__(self):
+        self.lines = []
+        self.xs = []
+
+    def __len__(self):
+        return len(self.lines)
+
+    def __call__(self, x):
+        '''
+        Get the minimum y value at x among all lines.
+        '''
+        i = bisect_left(self.xs, x)
+        return self.lines[i](x)
+
+    def add(self, line: Line):
+        assert(not self.lines or self.lines[-1].m > line.m)
+        while len(self) >= 2:
+            l1 = self.lines[-1]
+            l2 = self.lines[-2]
+            x = l1.intersect(l2)
+            if line(x) <= l1(x):
+                self.lines.pop()
+                self.xs.pop()
+            else:
+                break
+        if len(self) >= 1:
+            self.xs.append(line.intersect(self.lines[-1]))
+        self.lines.append(line)
+
+    def validate(self):
+        '''
+        Check that invariants hold.
+        '''
+        n = len(self.lines)
+        expect = []
+        for i in range(n - 1):
+            l1 = self.lines[i]
+            l2 = self.lines[i + 1]
+            x = l1.intersect(l2)
+            expect.append(x)
+        assert self.xs == expect, f'\n{self.xs}\nexpect:\n{expect}'
