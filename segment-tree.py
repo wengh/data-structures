@@ -1,4 +1,37 @@
 class SegmentTree:
+    def __init__(self, arr, identity=0):
+        self.identity = identity
+        self.n = len(arr)
+        self.store = [self.identity] * (2 * self.n)
+        for i in range(len(arr)):
+            self.store[self.n + i] = arr[i]
+        for i in range(self.n - 1, 0, -1):
+            self.store[i] = self.store[i << 1] + self.store[i << 1 | 1]
+
+    def set(self, i, value):
+        i += self.n
+        self.store[i] = value
+        while i > 1:
+            i >>= 1
+            self.store[i] = self.store[i << 1] + self.store[i << 1 | 1]
+
+    def sum(self, l, r):  # [l, r)
+        left = right = self.identity
+        l += self.n
+        r += self.n
+        while l < r:
+            if l & 1:
+                left = left + self.store[l]
+                l += 1
+            if r & 1:
+                r -= 1
+                right = self.store[r] + right
+            l >>= 1
+            r >>= 1
+        return left + right
+
+
+class SegmentTree:
     def __init__(self, lo, hi):
         self.lo = lo
         self.hi = hi
